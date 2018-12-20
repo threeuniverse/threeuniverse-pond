@@ -15,9 +15,19 @@ defineThreeUniverse(function (THREE, UNIVERSE, options) {
             // var queryTexture= textures[1];
             // var displacementMap = queryTexture.texture;
 
+            // var mesh = new THREE.Water( geometry, {
+			// 	color: params.color,
+			// 	scale: params.scale,
+			// 	flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
+			// 	textureWidth: 1024,
+			// 	textureHeight: 1024
+            // } );
+            
 
-            var material = new THREE.MeshBasicMaterial({
-                color:'blue' 
+            var material = new THREE.MeshLambertMaterial({
+                color:'blue', 
+                transparent:true,
+                opacity :0.68
             });
 
             var mesh = new THREE.Mesh(geometry, material);
