@@ -1,6 +1,6 @@
 defineThreeUniverse(function () {
 
-    let local_part = "https://threeuniverse.github.io/webgl-water";
+    let local_part = "https://threeuniverse.github.io/webgl-water/";
 
     let maping = [
        
