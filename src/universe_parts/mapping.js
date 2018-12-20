@@ -1,6 +1,6 @@
 defineThreeUniverse(function () {
 
-    let local_part = "https://threeuniverse.org/";
+    let local_part = "https://threeuniverse.github.io/webgl-water";
 
     let maping = [
        
@@ -38,7 +38,7 @@ defineThreeUniverse(function () {
             position: { x: -3800,z:3000 },
             description: "Small artificil pond",
             radius: 1500,
-            url: "http://localhost:8080/src/universe_parts/pond.js",
+            url: "https://threeuniverse.github.io/webgl-water/src/universe_parts/pond.js",
         },
          {
             position: { x: 200, z: -2500 },
