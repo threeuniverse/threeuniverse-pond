@@ -25,7 +25,7 @@ defineThreeUniverse(function (THREE, UNIVERSE, options) {
             
 
             var material = new THREE.MeshLambertMaterial({
-                color:'blue', 
+                color:'skyblue', 
                 transparent:true,
                 opacity :0.68
             });
