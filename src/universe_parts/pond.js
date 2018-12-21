@@ -57,7 +57,7 @@ defineThreeUniverse(function (THREE, UNIVERSE, options) {
 
             // }
 
-            // UNIVERSE.GroundManager.add(mesh);
+            UNIVERSE.GroundManager.add(mesh);            
             resolve(mesh);
 
         });
