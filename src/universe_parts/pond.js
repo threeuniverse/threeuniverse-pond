@@ -23,11 +23,11 @@ defineThreeUniverse(function (THREE, UNIVERSE, options) {
 			// 	textureHeight: 1024
             // } );
             
-
+            
             var material = new THREE.MeshLambertMaterial({
-                color:'skyblue', 
+                color:'#4285F4', 
                 transparent:true,
-                opacity :0.68
+                opacity :0.9
             });
 
             var mesh = new THREE.Mesh(geometry, material);
