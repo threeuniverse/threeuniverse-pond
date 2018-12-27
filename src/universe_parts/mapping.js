@@ -7,7 +7,7 @@ defineThreeUniverse(function () {
         {
             position: { x: 0, z: 0 },
             description: "Grass ground with single texture",
-            url: "https://threeuniverse.org/src/universe_parts/grassGround.js",
+            url: "https://threeuniverse.github.io/Terrain/src/universe_parts/grassGround.js",
             credits: "https://threejs.org/examples/#webgl_animation_cloth",
             radius:14142.13562373095
         },
@@ -20,7 +20,7 @@ defineThreeUniverse(function () {
         {
             position: { x: 100, z: 100 },
             credits: "https://www.turbosquid.com/",
-            url: "https://shakthi.github.io/PartUniverse/src/universe_parts/smallforest.js",
+            url: "https://threeuniverse.github.io/PartUniverse/src/universe_parts/smallforest.js",
         },
         {
             position: { x: 0, z: 0 },
@@ -32,7 +32,13 @@ defineThreeUniverse(function () {
             position: { x: 0, z: -2700, y: 0 },
             description: "Futeristic ground",
             radius: 1500,
-            url: "https://shakthi.github.io/PartUniverse/src/universe_parts/futureGround.js",
+            url: "https://threeuniverse.github.io/PartUniverse/src/universe_parts/futureGround.js",
+        },
+        {
+            position: { x: -3800,z:3000 },
+            description: "Small artificil pond",
+            radius: 1500,
+            url: "https://threeuniverse.github.io/webgl-water/src/universe_parts/pond.js",
         },
         {
             position: { x: -3800,z:3000 },
@@ -43,22 +49,22 @@ defineThreeUniverse(function () {
          {
             position: { x: 200, z: -2500 },
             description: "IcosahedronGeometry",
-            url: "https://shakthi.github.io/PartUniverse/src/universe_parts/sampleMeshModule.js"
+            url: "https://threeuniverse.github.io/PartUniverse/src/universe_parts/sampleMeshModule.js"
 
         },
         {
             position: { x: -1000, z: -2900 },
             description: "IcosahedronGeometry",
-            url: "https://shakthi.github.io/PartUniverse/src/universe_parts/sampleMeshModule.js"
+            url: "https://threeuniverse.github.io/PartUniverse/src/universe_parts/sampleMeshModule.js"
         },
         {
-            position: { x: 542, y: 100, z: -1900 },
+            position: { x: 542, y: 0, z: -1900 },
             description: "Simple cube ground",
             url: "https://ashwithags.github.io/threeuniverse/src/universe_parts/cube.js",
         }, {
             position: { x: 600, z: 100 },
             credits: "https://www.turbosquid.com/",
-            url: "https://shakthi.github.io/PartUniverse/src/universe_parts/hut.js",
+            url: "https://threeuniverse.github.io/PartUniverse/src/universe_parts/hut.js",
         },
 
 
