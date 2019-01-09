@@ -42,13 +42,13 @@ defineThreeUniverse(function (THREE, UNIVERSE, options) {
             // #define SHOW_TILING
             
             #define TAU 6.28318530718
-            #define MAX_ITER 5
+            #define MAX_ITER 6
             
             void mainImage( out vec4 fragColor, in vec2 fragCoord ) 
             {
                 float time = iTime * .1+23.0;
                 // uv should be the 0-1 uv of texture...
-                vec2 uv = fragCoord.xy / iResolution.xy;
+                vec2 uv = fragCoord.xy / iResolution.xy*vec2(4.0,4.0);
                 
             #ifdef SHOW_TILING
                 vec2 p = mod(uv*TAU*2.0, TAU)-250.0;
