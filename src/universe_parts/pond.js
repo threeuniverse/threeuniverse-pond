@@ -14,19 +14,19 @@ defineThreeUniverse(function (THREE, UNIVERSE, options) {
 
 
 
-    function stoneObject(obj,map,nmap) {
+    function stoneObject(obj, map, nmap) {
         return new Promise((resolve, reject) => {
 
-            var normalmap = UNIVERSE.TextureLoader.load(options.baseUrl + 'resource/'+nmap);
-            var diffselmap = UNIVERSE.TextureLoader.load(options.baseUrl +  'resource/'+map);
-            Promise.all([normalmap, diffselmap, objloaderPromise('resource/'+obj)])
+            var normalmap = UNIVERSE.TextureLoader.load(options.baseUrl + 'resource/' + nmap);
+            var diffselmap = UNIVERSE.TextureLoader.load(options.baseUrl + 'resource/' + map);
+            Promise.all([normalmap, diffselmap, objloaderPromise('resource/' + obj)])
                 .then(([normalmap, diffusemap, obj]) => {
-                    
-                    var geom=obj.getObjectByName("Stone_2_");
+
+                    var geom = obj.getObjectByName("Stone_2_");
                     geom.material.map = diffusemap;
                     geom.material.normalmap = normalmap;
                     resolve(geom);
-                    
+
                 })
 
         })
@@ -112,39 +112,39 @@ defineThreeUniverse(function (THREE, UNIVERSE, options) {
 
         UNIVERSE.GroundManager.add(mesh);
 
-        
-        stoneObject( 'stones/stone1/Stone Pack1_Stone_2.obj','stones/stone1/Stone_2_DiffuseMap.jpg','stones/stone1/Stone_2 NormalsMap.jpg').then((stone)=>{
-            stone.castShadow =true;
-            var stone1= stone.clone();
-            stone1.position.set(100,-430,0);
+
+        stoneObject('stones/stone1/Stone Pack1_Stone_2.obj', 'stones/stone1/Stone_2_DiffuseMap.jpg', 'stones/stone1/Stone_2 NormalsMap.jpg').then((stone) => {
+            stone.castShadow = true;
+            var stone1 = stone.clone();
+            stone1.position.set(100, -430, 0);
             mesh.add(stone1);
 
-            var stone2= stone.clone();
-             stone2.rotateZ(Math.PI/2*30);
-             stone2.scale.set(2,3,2);
-             stone2.position.set(100,700,0);
-             mesh.add(stone2);
+            var stone2 = stone.clone();
+            stone2.rotateZ(Math.PI / 2 * 30);
+            stone2.scale.set(2, 3, 2);
+            stone2.position.set(100, 700, 0);
+            mesh.add(stone2);
 
-             var stone3= stone.clone();
-             stone3.rotateZ(Math.PI/2*15);
-             stone3.scale.set(3,2,2);
-            stone3.position.set(270,700,0);
+            var stone3 = stone.clone();
+            stone3.rotateZ(Math.PI / 2 * 15);
+            stone3.scale.set(3, 2, 2);
+            stone3.position.set(270, 700, 0);
             mesh.add(stone3);
 
 
-            var stone4= stone.clone();
-             stone4.rotateZ(Math.PI/2*2.5)
-             stone4.scale.set(2,2,3);
-            stone4.position.set(-900,-150,0);
+            var stone4 = stone.clone();
+            stone4.rotateZ(Math.PI / 2 * 2.5)
+            stone4.scale.set(2, 2, 3);
+            stone4.position.set(-900, -150, 0);
             mesh.add(stone4);
 
 
 
             resolve(mesh);
         })
-    
 
-        
+
+
 
     });
 
