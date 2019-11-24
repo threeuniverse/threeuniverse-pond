@@ -1,36 +1,55 @@
 
 defineThreeUniverse(function (THREE, UNIVERSE, options) {
-    var queryTexture = null;
+
+
+
+
+    function objloaderPromise(path) {
+        return new Promise(function (resolve, reject) {
+            (new THREE.OBJLoader()).load(options.baseUrl + path, resolve, null, reject)
+
+        });
+    }
+
+
+
+
+    function stoneObject() {
+        return new Promise((resolve, reject) => {
+
+            var normalmap = UNIVERSE.TextureLoader.load(options.baseUrl + 'resource/stones/stone1/Stone_2 NormalsMap.jpg');
+            var diffselmap = UNIVERSE.TextureLoader.load(options.baseUrl + 'resource/stones/stone1/Stone_2_DiffuseMap.jpg');
+            Promise.all([normalmap, diffselmap, objloaderPromise('resource/stones/stone1/Stone Pack1_Stone_2.obj')])
+                .then(([normalmap, diffusemap, obj]) => {
+                    
+                    var geom=obj.getObjectByName("Stone_2_");
+                    geom.material.map = diffusemap;
+                    geom.material.normalmap = normalmap;
+                    resolve(geom);
+                    
+                })
+
+        })
+
+
+    }
+
+
+
+
+
+
+
     return new Promise(function (resolve, reject) {
+
 
         var geometry = new THREE.PlaneBufferGeometry(2000, 2000, 1, 1);
 
-        options.requestAnimationFrame(()=>{});
+        options.requestAnimationFrame(() => { });
 
-            // var groundTexture = textures[0];
-            // groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
-            // groundTexture.repeat.set(25, 25);
-            // groundTexture.anisotropy = 16;
 
-            // var queryTexture= textures[1];
-            // var displacementMap = queryTexture.texture;
 
-            // var mesh = new THREE.Water( geometry, {
-			// 	color: params.color,
-			// 	scale: params.scale,
-			// 	flowDirection: new THREE.Vector2( params.flowX, params.flowY ),
-			// 	textureWidth: 1024,
-			// 	textureHeight: 1024
-            // } );
-            
-            
-            // var material = new THREE.MeshLambertMaterial({
-            //     color:'#4285F4', 
-            //     transparent:true,
-            //     opacity :0.9
-            // });
-
-            let code = `// Found this on GLSL sandbox. I really liked it, changed a few things and made it tileable.
+        let code = `// Found this on GLSL sandbox. I really liked it, changed a few things and made it tileable.
             // :)
             // by David Hoskins.
             
@@ -84,39 +103,24 @@ defineThreeUniverse(function (THREE, UNIVERSE, options) {
                 #endif
                 fragColor = vec4(colour, 0.7);
             }`
-            var material = new THREE.ShaderToyMaterial(code)
+        var material = new THREE.ShaderToyMaterial(code)
 
-            var mesh = new THREE.Mesh(geometry, material);
-            mesh.rotation.x = - Math.PI / 2;
-            mesh.position.y= -40;
-            mesh.receiveShadow = true;
-
-            
-
-            // var originalRaycast = mesh.raycast;
-            // mesh.raycast = function (raycaster, intersects) {
-            //     originalRaycast.call(mesh, raycaster, intersects);
-            //     var thisobjectsIntersects = intersects.filter((element) => element.object == mesh);
-            //     if (thisobjectsIntersects.length) {
-            //         let uv = new THREE.Vector2().copy(thisobjectsIntersects[0].uv);
-            //         displacementMap.transformUv(uv);
-            //         var hightpixel = queryTexture.getPixelAtUv(uv.x, uv.y);
-            //         var hightVal = hightpixel.r / 255 * material.displacementScale + material.displacementBias;
-            //     }
-
-            //     thisobjectsIntersects.forEach(element => {
-            //         element.point.y = hightVal;
-
-            //     });
+        var mesh = new THREE.Mesh(geometry, material);
+        mesh.rotation.x = - Math.PI / 2;
+        mesh.position.y = -40;
+        mesh.receiveShadow = true;
 
 
+        stoneObject().then((stone)=>{
+            debugger;
+            mesh.add(stone);
+        })
+    
 
-            // }
+        UNIVERSE.GroundManager.add(mesh);
+        resolve(mesh);
 
-            UNIVERSE.GroundManager.add(mesh);            
-            resolve(mesh);
-
-        });
+    });
 
 
 
