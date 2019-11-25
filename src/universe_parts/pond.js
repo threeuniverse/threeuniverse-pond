@@ -36,39 +36,115 @@ defineThreeUniverse(function (THREE, UNIVERSE, options) {
 
 
 
+    var WaterShader = function (parameters, others) {
+
+        THREE.MeshLambertMaterial.call(this, parameters);
+
+    }
+
+    WaterShader.prototype = Object.create(THREE.MeshLambertMaterial.prototype);
+
+    WaterShader.prototype.onBeforeCompile = function (shader) {
+
+        this.uniforms = shader.uniforms;
+        this.uniforms.iTime = { value: 0 }
 
 
 
-
-    return new Promise(function (resolve, reject) {
-
-
-        var geometry = new THREE.PlaneBufferGeometry(2000, 2000, 1, 1);
-
-        options.requestAnimationFrame(() => { });
-
-
-
-        let code = `// Found this on GLSL sandbox. I really liked it, changed a few things and made it tileable.
-            // :)
-            // by David Hoskins.
+        shader.vertexShader = `
+#define LAMBERT
+#define USE_MAP
+varying vec3 vLightFront;
+uniform float iTime;
+#ifdef DOUBLE_SIDED
+	varying vec3 vLightBack;
+#endif
+#include <common>
+#include <uv_pars_vertex>
+#include <uv2_pars_vertex>
+#include <envmap_pars_vertex>
+#include <bsdfs>
+#include <lights_pars_begin>
+#include <color_pars_vertex>
+#include <fog_pars_vertex>
+#include <morphtarget_pars_vertex>
+#include <skinning_pars_vertex>
+#include <shadowmap_pars_vertex>
+#include <logdepthbuf_pars_vertex>
+#include <clipping_planes_pars_vertex>
+void main() {
+	#include <uv_vertex>
+	#include <uv2_vertex>
+	#include <color_vertex>
+	#include <beginnormal_vertex>
+	#include <morphnormal_vertex>
+	#include <skinbase_vertex>
+	#include <skinnormal_vertex>
+	#include <defaultnormal_vertex>
+	#include <begin_vertex>
+	#include <morphtarget_vertex>
+	#include <skinning_vertex>
+	#include <project_vertex>
+	#include <logdepthbuf_vertex>
+	#include <clipping_planes_vertex>
+	#include <worldpos_vertex>
+	#include <envmap_vertex>
+	#include <lights_lambert_vertex>
+	#include <shadowmap_vertex>
+	#include <fog_vertex>
+}
+        `
+        shader.fragmentShader = `
+        #define USE_MAP
+        uniform vec3 diffuse;
+        uniform vec3 emissive;
+        uniform float opacity;
+        uniform float iTime;
+        varying vec3 vLightFront;
+        #ifdef DOUBLE_SIDED
+            varying vec3 vLightBack;
+        #endif
+        #include <common>
+        #include <packing>
+        #include <dithering_pars_fragment>
+        #include <color_pars_fragment>
+        #include <uv_pars_fragment>
+        #include <uv2_pars_fragment>
+        #include <map_pars_fragment>
+        #include <alphamap_pars_fragment>
+        #include <aomap_pars_fragment>
+        #include <lightmap_pars_fragment>
+        #include <emissivemap_pars_fragment>
+        #include <envmap_pars_fragment>
+        #include <bsdfs>
+        #include <lights_pars_begin>
+        #include <fog_pars_fragment>
+        #include <shadowmap_pars_fragment>
+        #include <shadowmask_pars_fragment>
+        #include <specularmap_pars_fragment>
+        #include <logdepthbuf_pars_fragment>
+        #include <clipping_planes_pars_fragment>
+        void main() {
+            #include <clipping_planes_fragment>
+            vec4 diffuseColor = vec4( diffuse, opacity );
+            ReflectedLight reflectedLight = ReflectedLight( vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ), vec3( 0.0 ) );
+            vec3 totalEmissiveRadiance = emissive;
+            #include <logdepthbuf_fragment>
+            #include <map_fragment>
             
-            
-            // Water turbulence effect by joltz0r 2013-07-04, improved 2013-07-07
-            
-            
-            // Redefine below to see the tiling...
+
             // #define SHOW_TILING
-            
             #define TAU 6.28318530718
             #define MAX_ITER 6
             
-            void mainImage( out vec4 fragColor, in vec2 fragCoord ) 
-            {
-                float time = iTime * .1+23.0;
-                // uv should be the 0-1 uv of texture...
-                vec2 uv = fragCoord.xy / iResolution.xy*vec2(4.0,4.0);
-                
+
+            vec2 uv = vUv;
+            
+            
+            
+            vec2 iResolution = vec2(256.0,256.0);
+            float time = iTime * .1+23.0;
+            
             #ifdef SHOW_TILING
                 vec2 p = mod(uv*TAU*2.0, TAU)-250.0;
             #else
@@ -87,7 +163,7 @@ defineThreeUniverse(function (THREE, UNIVERSE, options) {
                 c /= float(MAX_ITER);
                 c = 1.17-pow(c, 1.4);
                 vec3 colour = vec3(pow(abs(c), 8.0));
-                colour = clamp(colour + vec3(0.0, 0.35, 0.5), 0.0, 1.0);
+                colour = clamp(colour + vec3(0.0, 0.25, 0.5), 0.0, 1.0);
                 
             
                 #ifdef SHOW_TILING
@@ -101,9 +177,83 @@ defineThreeUniverse(function (THREE, UNIVERSE, options) {
                 colour = mix(colour, vec3(1.0, 1.0, 0.0), (uv.x + uv.y) * first.x * first.y); // Yellow line
                 
                 #endif
-                fragColor = vec4(colour, 0.7);
-            }`
-        var material = new THREE.ShaderToyMaterial(code)
+                diffuseColor = vec4(colour, 0.2);
+            
+
+
+
+            #include <color_fragment>
+            #include <alphamap_fragment>
+            #include <alphatest_fragment>
+            #include <specularmap_fragment>
+            #include <emissivemap_fragment>
+            // accumulation
+            reflectedLight.indirectDiffuse = getAmbientLightIrradiance( ambientLightColor );
+            #include <lightmap_fragment>
+            reflectedLight.indirectDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb );
+            #ifdef DOUBLE_SIDED
+                reflectedLight.directDiffuse = ( gl_FrontFacing ) ? vLightFront : vLightBack;
+            #else
+                reflectedLight.directDiffuse = vLightFront;
+            #endif
+            reflectedLight.directDiffuse *= BRDF_Diffuse_Lambert( diffuseColor.rgb ) * getShadowMask();
+            // modulation
+            #include <aomap_fragment>
+            vec3 outgoingLight = reflectedLight.directDiffuse + reflectedLight.indirectDiffuse + totalEmissiveRadiance;
+            #include <envmap_fragment>
+
+
+            gl_FragColor = vec4( outgoingLight, diffuseColor.a );
+
+            
+            #include <tonemapping_fragment>
+            #include <encodings_fragment>
+            #include <fog_fragment>
+            #include <premultiplied_alpha_fragment>
+            #include <dithering_fragment>
+        }
+        `
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    return new Promise(function (resolve, reject) {
+
+
+        var geometry = new THREE.PlaneBufferGeometry(2000, 2000, 1, 1);
+        var clock = new THREE.Clock();
+
+
+
+
+        var material = new WaterShader({});
+        options.requestAnimationFrame(() => {
+            material.uniforms.iTime.value = clock.getElapsedTime() ;
+        });
+
 
         var mesh = new THREE.Mesh(geometry, material);
         mesh.rotation.x = - Math.PI / 2;
