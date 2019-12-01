@@ -251,7 +251,10 @@ void main() {
 
         var material = new WaterShader({});
         options.requestAnimationFrame(() => {
-            material.uniforms.iTime.value = clock.getElapsedTime() ;
+            if (material.uniforms) {
+                material.uniforms.iTime.value = clock.getElapsedTime() ;    
+            }
+            
         });
 
 
